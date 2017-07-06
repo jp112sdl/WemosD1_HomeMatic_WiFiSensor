@@ -2,15 +2,16 @@
 
 ## Folgende Bauteile werden benötigt:
 - Wemos D1 Mini
-- DHT22 oder AM2302 Sensor
+- DHT22/AM2302  - ODER - DS18B20 Sensor
 - 1 Taster (nicht dauerhaft, nur um bei erster Inbetriebnahme / Änderungen den Konfigurationsmodus zu starten)
 - Stromversorgung (z.B. ein Batteriehalter mit 3x AA Batterien)
 
-![Anschlussplan](Images/Anschlussplan.png)
+![Anschlussplan](Images/Anschlussplan_DHT22.png)
+![Anschlussplan](Images/Anschlussplan_DS18B20.png)
 
 
 ## Flashen
-Wenn alles nach obigem Bild verdrahtet wurde, kann das Image ```WemosD1_CCU_DHT22.ino.d1_mini.bin``` auf den Wemos geflasht werden.
+Wenn alles nach obigem Bild verdrahtet wurde, kann das Image ``WemosD1_HomeMatic_WiFiSensor.ino.d1_mini.bin``` auf den Wemos geflasht werden.
 
 **Hinweis: Der Flash-Vorgang funktioniert nur ohne Brücke zwischen D0/RST. Diese ist daher bestenfalls erst nach dem Flashen einzulöten** 
 
@@ -24,7 +25,7 @@ Wenn alles nach obigem Bild verdrahtet wurde, kann das Image ```WemosD1_CCU_DHT2
 3. Bezeichnung des neuen COM-Ports im Gerätemanager notieren (z.B. COM5)
 4. Flash-Vorgang durchführen: 
 
-  ```esptool.exe -vv -cd nodemcu -cb 921600 -cp COM5 -ca 0x00000 -cf WemosD1_CCU_DHT22.ino.d1_mini.bin```
+  ```esptool.exe -vv -cd nodemcu -cb 921600 -cp COM5 -ca 0x00000 -cf WemosD1_HomeMatic_WiFiSensor.ino.d1_mini.bin```
 
 ## Voraussetzungen: 
 - installiertes CUxD-Addon auf der CCU und ein Thermostat-Device 
