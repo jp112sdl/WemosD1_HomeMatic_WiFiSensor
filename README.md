@@ -2,15 +2,20 @@
 
 ## Folgende Bauteile werden benötigt:
 - Wemos D1 Mini
-- DHT22 oder AM2302 Sensor
+- DHT22/AM2302  - ODER - DS18B20 Sensor
 - 1 Taster (nicht dauerhaft, nur um bei erster Inbetriebnahme / Änderungen den Konfigurationsmodus zu starten)
 - Stromversorgung (z.B. ein Batteriehalter mit 3x AA Batterien)
 
-![Anschlussplan](Images/Anschlussplan.png)
+![Anschlussplan](Images/Anschlussplan_DHT22.png)
+Anschluss eines DHT22/AM2302 Sensors
 
+![Anschlussplan](Images/Anschlussplan_DS18B20.png)
+Anschluss eines DS18B20 Sensors
+
+**Wichtig: Die Drahtbrücke zwischen GND und D6 dient der Erkennung des DS18B20-Modus und wird somit auch nur beim Betrieb mit einem DS18B20 Temperaturfühlers benötigt.**
 
 ## Flashen
-Wenn alles nach obigem Bild verdrahtet wurde, kann das Image ```WemosD1_CCU_DHT22.ino.d1_mini.bin``` auf den Wemos geflasht werden.
+Wenn alles nach obigem Bild verdrahtet wurde, kann das Image ``WemosD1_HomeMatic_WiFiSensor.ino.d1_mini.bin``` auf den Wemos geflasht werden.
 
 **Hinweis: Der Flash-Vorgang funktioniert nur ohne Brücke zwischen D0/RST. Diese ist daher bestenfalls erst nach dem Flashen einzulöten** 
 
@@ -24,13 +29,14 @@ Wenn alles nach obigem Bild verdrahtet wurde, kann das Image ```WemosD1_CCU_DHT2
 3. Bezeichnung des neuen COM-Ports im Gerätemanager notieren (z.B. COM5)
 4. Flash-Vorgang durchführen: 
 
-  ```esptool.exe -vv -cd nodemcu -cb 921600 -cp COM5 -ca 0x00000 -cf WemosD1_CCU_DHT22.ino.d1_mini.bin```
+  ```esptool.exe -vv -cd nodemcu -cb 921600 -cp COM5 -ca 0x00000 -cf WemosD1_HomeMatic_WiFiSensor.ino.d1_mini.bin```
 
 ## Voraussetzungen: 
 - installiertes CUxD-Addon auf der CCU und ein Thermostat-Device 
 ![NewCUXDDevice](Images/CUxD_Device_erzeugen.png)
 mit folgenden Einstellungen in der WebUI:
 ![NewCUXDDevice](Images/CCU_Geraeteeinstellung.png)
+**Hinweis: Die Einstellung "MODE TEMP+HUM" ist nur bei Verwendung eines DHT22-Sensors notwendig.**
 
 ## Konfiguration des Wemos D1
 Um den Konfigurationsmodus zu starten, muss der Wemos D1 mit gedrückt gehaltenem Taster gestartet werden.
