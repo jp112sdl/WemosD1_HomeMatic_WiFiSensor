@@ -36,6 +36,7 @@ Wenn alles nach obigem Bild verdrahtet wurde, kann das Image ``WemosD1_HomeMatic
 ![NewCUXDDevice](Images/CUxD_Device_erzeugen.png)
 mit folgenden Einstellungen in der WebUI:
 ![NewCUXDDevice](Images/CCU_Geraeteeinstellung.png)
+**Hinweis: Die Einstellung "MODE TEMP+HUM" ist nur bei Verwendung eines DHT22-Sensors notwendig.**
 
 ## Konfiguration des Wemos D1
 Um den Konfigurationsmodus zu starten, muss der Wemos D1 mit gedrückt gehaltenem Taster gestartet werden.
