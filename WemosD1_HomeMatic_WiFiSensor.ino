@@ -12,7 +12,7 @@
 #define SensorVCCPin   D1 //+VCC-Pin 
 #define DS18B20DataPin D4
 #define DebugPin       D5 //Optional: D5 gegen GND, um serielle Ausgabe zu aktivieren (115200,8,N,1)
-#define DS18B20active  D6
+#define DS18B20active  D6 //D6 gegen GND, um OneWire Modus zu aktivieren
 
 DHT dht(DHT22DataPin, DHT22);
 OneWire ds18b20Wire(DS18B20DataPin);
@@ -22,6 +22,7 @@ char sleepTimeMin[4]  = "60";
 char ccuip[16];
 String cuxddevice;//         = "CUX9002001";
 bool SerialDEBUG = false;
+bool OneWireMode = false;
 
 //WifiManager - don't touch
 byte ConfigPortalTimeout = 180;
@@ -62,17 +63,18 @@ void setup() {
     }
   }
 
+  OneWireMode = (digitalRead(DS18B20active) == LOW);
+
   loadSystemConfig();
 
   if (doWifiConnect()) {
     printSerial("WLAN erfolgreich verbunden!");
-    if (digitalRead(DS18B20active) == LOW) {
+    if (OneWireMode) {
       printSerial("DS18B20 - OneWire - Modus aktiv!");
       ds18b20Sensors.begin();
       ds18b20Sensors.requestTemperatures();
       float t = ds18b20Sensors.getTempCByIndex(0);
-      printSerial("Setze CCU-Wert");
-      printSerial("Temperatur = " + String(t));
+      printSerial("Setze CCU-Wert Temperatur = " + String(t));
       setStateCCU("SET_TEMPERATURE", String(ds18b20Sensors.getTempCByIndex(0)));
     } else {
       printSerial("DHT22 - Modus aktiv!");
@@ -87,12 +89,10 @@ void setup() {
         float t = dht.readTemperature();
         delay(3000);
       }
-      printSerial("Setze CCU-Werte");
-      printSerial("Temperatur = " + String(t) + ", Feuchte = " + String(h));
+      printSerial("Setze CCU-Werte Temperatur = " + String(t) + ", Feuchte = " + String(h));
       setStateCCU("SET_TEMPERATURE", String(t));
       setStateCCU("SET_HUMIDITY", String(h));
     }
-
   } else ESP.restart();
   delay(100);
   printSerial("Gehe schlafen für " + String(sleepTimeMin) + " Minuten");
@@ -147,7 +147,10 @@ bool doWifiConnect() {
   WiFiManagerParameter custom_ip("custom_ip", "IP-Adresse", "", 16);
   WiFiManagerParameter custom_netmask("custom_netmask", "Netzmaske", "", 16);
   WiFiManagerParameter custom_gw("custom_gw", "Gateway", "", 16);
+  const char *WorkMode = "<br/>Sensormodus = "+ (OneWireMode) ? "DHT22/AM2302":"DS18B20";
+  WiFiManagerParameter custom_modetext(WorkMode);
   WiFiManagerParameter custom_text("<br/><br>Statische IP (wenn leer, dann DHCP):");
+  wifiManager.addParameter(&custom_modetext);
   wifiManager.addParameter(&custom_ccuip);
   wifiManager.addParameter(&custom_cuxddevicename);
   wifiManager.addParameter(&custom_sleeptime);
@@ -230,7 +233,6 @@ bool doWifiConnect() {
 
 void configModeCallback (WiFiManager *myWiFiManager) {
   printSerial("AP-Modus ist aktiv!");
-  //Ausgabe, dass der AP Modus aktiv ist
 }
 
 void saveConfigCallback () {
@@ -240,30 +242,26 @@ void saveConfigCallback () {
 
 void parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base) {
   for (int i = 0; i < maxBytes; i++) {
-    bytes[i] = strtoul(str, NULL, base);  // Convert byte
-    str = strchr(str, sep);               // Find next separator
+    bytes[i] = strtoul(str, NULL, base); 
+    str = strchr(str, sep);
     if (str == NULL || *str == '\0') {
-      break;                            // No more separators, exit
+      break;
     }
-    str++;                                // Point to next character after separator
+    str++;
   }
 }
 
 bool loadSystemConfig() {
-  //read configuration from FS json
   printSerial("mounting FS...");
   if (SPIFFS.begin()) {
     printSerial("mounted file system");
     if (SPIFFS.exists("/" + configJsonFile)) {
-      //file exists, reading and loading
       printSerial("reading config file");
       File configFile = SPIFFS.open("/" + configJsonFile, "r");
       if (configFile) {
         printSerial("opened config file");
         size_t size = configFile.size();
-        // Allocate a buffer to store contents of the file.
         std::unique_ptr<char[]> buf(new char[size]);
-
         configFile.readBytes(buf.get(), size);
         DynamicJsonBuffer jsonBuffer;
         JsonObject& json = jsonBuffer.parseObject(buf.get());
