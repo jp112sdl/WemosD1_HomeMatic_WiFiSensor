@@ -7,7 +7,9 @@
 - Stromversorgung (z.B. ein Batteriehalter mit 3x AA Batterien)
 
 ![Anschlussplan](Images/Anschlussplan_DHT22.png)
+Anschluss eines DHT22/AM2302 Sensors
 ![Anschlussplan](Images/Anschlussplan_DS18B20.png)
+Anschluss eines DS18B20 Sensors
 
 
 ## Flashen
