@@ -8,9 +8,11 @@
 
 ![Anschlussplan](Images/Anschlussplan_DHT22.png)
 Anschluss eines DHT22/AM2302 Sensors
+
 ![Anschlussplan](Images/Anschlussplan_DS18B20.png)
 Anschluss eines DS18B20 Sensors
 
+**Wichtig: Die Drahtbrücke zwischen GND und D6 dient der Erkennung des DS18B20-Modus und wird somit auch nur beim Betrieb mit einem DS18B20 Temperaturfühlers benötigt.**
 
 ## Flashen
 Wenn alles nach obigem Bild verdrahtet wurde, kann das Image ``WemosD1_HomeMatic_WiFiSensor.ino.d1_mini.bin``` auf den Wemos geflasht werden.
