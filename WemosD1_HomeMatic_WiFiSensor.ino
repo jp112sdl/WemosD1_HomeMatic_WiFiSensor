@@ -15,12 +15,12 @@
 #define DS18B20active  D6 //D6 gegen GND, um OneWire Modus zu aktivieren
 
 DHT dht(DHT22DataPin, DHT22);
-OneWire ds18b20Wire(DS18B20DataPin);
-DallasTemperature ds18b20Sensors(&ds18b20Wire);
+OneWire DS18B20Wire(DS18B20DataPin);
+DallasTemperature DS18B20Sensors(&DS18B20Wire);
 
 char sleepTimeMin[4]  = "60";
 char ccuip[16];
-String cuxddevice;//         = "CUX9002001";
+String CUxDDevice;//         = "CUX9002001";
 bool SerialDEBUG = false;
 bool OneWireMode = false;
 
@@ -64,20 +64,19 @@ void setup() {
   }
 
   OneWireMode = (digitalRead(DS18B20active) == LOW);
+  printSerial((OneWireMode) ? "DS18B20 - OneWire - Modus aktiv!" : "DHT22 - Modus aktiv!");
 
   loadSystemConfig();
 
   if (doWifiConnect()) {
     printSerial("WLAN erfolgreich verbunden!");
     if (OneWireMode) {
-      printSerial("DS18B20 - OneWire - Modus aktiv!");
-      ds18b20Sensors.begin();
-      ds18b20Sensors.requestTemperatures();
-      float t = ds18b20Sensors.getTempCByIndex(0);
+      DS18B20Sensors.begin();
+      DS18B20Sensors.requestTemperatures();
+      float t = DS18B20Sensors.getTempCByIndex(0);
       printSerial("Setze CCU-Wert Temperatur = " + String(t));
-      setStateCCU("SET_TEMPERATURE", String(ds18b20Sensors.getTempCByIndex(0)));
+      setStateCCU("SET_TEMPERATURE", String(DS18B20Sensors.getTempCByIndex(0)));
     } else {
-      printSerial("DHT22 - Modus aktiv!");
       dht.begin();
       float h = dht.readHumidity();
       float t = dht.readTemperature();
@@ -104,7 +103,7 @@ void setStateCCU(String type, String value) {
   if (WiFi.status() == WL_CONNECTED)
   {
     HTTPClient http;
-    String url = "http://" + String(ccuip) + ":8181/cuxd.exe?ret=dom.GetObject(%22CUxD." + cuxddevice + ":1." + type + "%22).State(" + value + ")";
+    String url = "http://" + String(ccuip) + ":8181/cuxd.exe?ret=dom.GetObject(%22CUxD." + CUxDDevice + ":1." + type + "%22).State(" + value + ")";
     printSerial("URL = " + url);
     http.begin(url);
     int httpCode = http.GET();
@@ -139,21 +138,24 @@ bool doWifiConnect() {
   wifiManager.setSaveConfigCallback(saveConfigCallback);
   WiFiManagerParameter custom_ccuip("ccu", "IP der CCU2", ccuip, 16);
 
-  char cuxddevicechar[50];
-  cuxddevice.toCharArray(cuxddevicechar, 50);
-  WiFiManagerParameter custom_cuxddevicename("cuxddevice", "CUxD Device Seriennumer", cuxddevicechar, 50);
+  char CUxDDeviceAsCHAR[50];
+  CUxDDevice.toCharArray(CUxDDeviceAsCHAR, 50);
+  WiFiManagerParameter custom_cuxddevicename("cuxddevice", "CUxD Device Seriennumer", CUxDDeviceAsCHAR, 50);
   WiFiManagerParameter custom_sleeptime("sleeptime", "&Uuml;bertragung alle x Minuten", sleepTimeMin, 4);
 
   WiFiManagerParameter custom_ip("custom_ip", "IP-Adresse", "", 16);
   WiFiManagerParameter custom_netmask("custom_netmask", "Netzmaske", "", 16);
   WiFiManagerParameter custom_gw("custom_gw", "Gateway", "", 16);
-  const char *WorkMode = "<br/>Sensormodus = "+ (OneWireMode) ? "DHT22/AM2302":"DS18B20";
-  WiFiManagerParameter custom_modetext(WorkMode);
-  WiFiManagerParameter custom_text("<br/><br>Statische IP (wenn leer, dann DHCP):");
+
+  const char * text = (OneWireMode) ? "<center><h5>DS18B20 Sensor-Modus</h5></center>" : "<center><h5>DHT22/AM2302 Sensor-Modus</h5></center>";
+
+  WiFiManagerParameter custom_modetext(text);
+
   wifiManager.addParameter(&custom_modetext);
   wifiManager.addParameter(&custom_ccuip);
   wifiManager.addParameter(&custom_cuxddevicename);
   wifiManager.addParameter(&custom_sleeptime);
+  WiFiManagerParameter custom_text("<br/><br>Statische IP (wenn leer, dann DHCP):");
   wifiManager.addParameter(&custom_text);
   wifiManager.addParameter(&custom_ip);
   wifiManager.addParameter(&custom_netmask);
@@ -201,12 +203,12 @@ bool doWifiConnect() {
       strcpy(gw,      "0.0.0.0");
     }
     strcpy(ccuip, custom_ccuip.getValue());
-    cuxddevice = custom_cuxddevicename.getValue();
+    CUxDDevice = custom_cuxddevicename.getValue();
     json["ip"] = ip;
     json["netmask"] = netmask;
     json["gw"] = gw;
     json["ccuip"] = ccuip;
-    json["cuxddevice"] = cuxddevice;
+    json["cuxddevice"] = CUxDDevice;
     json["sleeptime"] = String(custom_sleeptime.getValue()).toInt();
 
     SPIFFS.remove("/" + configJsonFile);
@@ -242,7 +244,7 @@ void saveConfigCallback () {
 
 void parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base) {
   for (int i = 0; i < maxBytes; i++) {
-    bytes[i] = strtoul(str, NULL, base); 
+    bytes[i] = strtoul(str, NULL, base);
     str = strchr(str, sep);
     if (str == NULL || *str == '\0') {
       break;
@@ -276,7 +278,7 @@ bool loadSystemConfig() {
           strcpy(gw,         json["gw"]);
           strcpy(ccuip,      json["ccuip"]);
           const char* jsoncuxddevice = json["cuxddevice"];
-          cuxddevice = jsoncuxddevice;
+          CUxDDevice = jsoncuxddevice;
           itoa(json["sleeptime"], sleepTimeMin, 10);
         } else {
           printSerial("failed to load json config");
