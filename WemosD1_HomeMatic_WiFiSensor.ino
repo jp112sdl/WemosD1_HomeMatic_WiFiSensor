@@ -148,7 +148,6 @@ bool doWifiConnect() {
   WiFiManagerParameter custom_gw("custom_gw", "Gateway", "", 16);
 
   const char * text = (OneWireMode) ? "<center><h5>DS18B20 Sensor-Modus</h5></center>" : "<center><h5>DHT22/AM2302 Sensor-Modus</h5></center>";
-
   WiFiManagerParameter custom_modetext(text);
 
   wifiManager.addParameter(&custom_modetext);
