@@ -15,7 +15,7 @@ Anschluss eines DS18B20 Sensors
 **Wichtig: Die Drahtbrücke zwischen GND und D6 dient der Erkennung des DS18B20-Modus und wird somit auch nur beim Betrieb mit einem DS18B20 Temperaturfühlers benötigt.**
 
 ## Flashen
-Wenn alles nach obigem Bild verdrahtet wurde, kann das Image ``WemosD1_HomeMatic_WiFiSensor.ino.d1_mini.bin``` auf den Wemos geflasht werden.
+Wenn alles nach obigem Bild verdrahtet wurde, kann das Image ```WemosD1_HomeMatic_WiFiSensor.ino.d1_mini.bin``` auf den Wemos geflasht werden.
 
 **Hinweis: Der Flash-Vorgang funktioniert nur ohne Brücke zwischen D0/RST. Diese ist daher bestenfalls erst nach dem Flashen einzulöten** 
 
@@ -23,7 +23,7 @@ Wenn alles nach obigem Bild verdrahtet wurde, kann das Image ``WemosD1_HomeMatic
 1. Voraussetzungen:
   - CH340-Treiber installieren
   - esptool 
-    - für [Windows](https://github.com/thekikz/esptool/blob/master/esptool.exe) herunterladen
+    - für [Windows](https://github.com/thekikz/esptool/raw/master/esptool.exe) herunterladen
     - oder plattformunabhängig das Python Package [esptool](https://pypi.python.org/pypi/esptool/)
 2. WemosD1 mit einem microUSB-Kabel an den PC anschließen
 3. Bezeichnung des neuen COM-Ports im Gerätemanager notieren (z.B. COM5)
