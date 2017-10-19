@@ -295,6 +295,5 @@ bool loadSystemConfig() {
   }
 }
 
-
 void loop() {
 }
