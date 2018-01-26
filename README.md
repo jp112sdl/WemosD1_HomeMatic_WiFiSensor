@@ -1,4 +1,8 @@
+# !!! Discontinued !!! 
 # Wemos D1 als HomeMatic Temperatur- / Luftfeuchtesensor  
+# diese Projekt wird nicht weiter gepflegt, da die Einbindung über 868MHz sinnvoller erscheint.
+# Nähere Informationen gibts [hier](https://github.com/jp112sdl/Beispiel_AskSinPP)
+# Im "examples"-Ordner befinden sich die Projektdateien für die Sensoren
 
 ## Folgende Bauteile werden benötigt:
 - Wemos D1 Mini
