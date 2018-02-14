@@ -4,14 +4,13 @@
 #include <FS.h>
 #include <ArduinoJson.h>
 #include <DHT.h>
-#include <OneWire.h>
+#//include <OneWire.h>
 #include <DallasTemperature.h>
 
 #define TasterPin      D7 //Taster gegen GND, um den Konfigurationsmodus zu aktivieren
 #define DHT22DataPin   D2 //DATA-Pin 
 #define SensorVCCPin   D1 //+VCC-Pin 
 #define DS18B20DataPin D4
-#define DebugPin       D5 //Optional: D5 gegen GND, um serielle Ausgabe zu aktivieren (115200,8,N,1)
 #define DS18B20active  D6 //D6 gegen GND, um OneWire Modus zu aktivieren
 
 DHT dht(DHT22DataPin, DHT22);
@@ -21,7 +20,7 @@ DallasTemperature DS18B20Sensors(&DS18B20Wire);
 char sleepTimeMin[4]  = "60";
 char ccuip[16];
 String CUxDDevice;//         = "CUX9002001";
-bool SerialDEBUG = false;
+bool SerialDEBUG = true;
 bool OneWireMode = false;
 
 //WifiManager - don't touch
@@ -36,7 +35,6 @@ boolean startWifiManager = false;
 
 void setup() {
   pinMode(TasterPin,      INPUT_PULLUP);
-  pinMode(DebugPin,       INPUT_PULLUP);
   pinMode(DS18B20active,  INPUT_PULLUP);
   pinMode(DS18B20DataPin, INPUT_PULLUP);
   pinMode(DHT22DataPin,   INPUT_PULLUP);
@@ -46,12 +44,9 @@ void setup() {
   digitalWrite(SensorVCCPin, HIGH);
   digitalWrite(LED_BUILTIN,  HIGH);
 
-  if (digitalRead(DebugPin) == LOW) {
-    SerialDEBUG = true;
-    wifiManagerDebugOutput = true;
-    Serial.begin(115200);
-    printSerial("Programmstart...");
-  }
+  wifiManagerDebugOutput = true;
+  Serial.begin(115200);
+  printSerial("Programmstart...");
 
   if (digitalRead(TasterPin) == LOW) {
     startWifiManager = true;
